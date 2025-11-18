@@ -82,12 +82,13 @@
 </head>
 <body class="color-light-bg min-h-screen">
 
-    <!-- Cấu hình container chính: h-screen (chiều cao 100% viewport) và overflow-hidden để ngăn cuộn ngoài -->
+    <!-- Cấu hình container chính: flex-col trên mobile, md:flex-row trên desktop, h-screen (chiều cao 100% viewport) -->
     <div class="flex flex-col md:flex-row h-screen overflow-hidden">
         
         <!-- Sidebar (Thanh điều hướng bên trái) -->
-        <!-- Đặt h-full để thanh sidebar chiếm toàn bộ chiều cao container (h-screen) -->
-        <aside class="w-full md:w-64 color-dark p-6 text-white h-full shadow-lg rounded-r-xl flex-shrink-0">
+        <!-- ĐÃ CHỈNH SỬA: responsive rounded corners -->
+        <aside class="w-full md:w-64 color-dark p-6 text-white shadow-lg flex-shrink-0 
+                      rounded-xl md:rounded-r-xl md:rounded-l-none">
             <!-- Thông tin Hồ sơ -->
             <div class="flex flex-col items-center mb-8 pt-4"> 
                 <div class="w-20 h-20 bg-gray-300 rounded-lg flex items-center justify-center mb-3">
@@ -130,14 +131,13 @@
         </aside>
 
         <!-- Main Content (Nội dung chính) -->
-        <!-- Thêm overflow-y-auto để chỉ khu vực này cuộn -->
         <main class="flex-1 p-4 md:p-8 overflow-y-auto">
             <div id="content-area" class="bg-white p-6 md:p-8 rounded-xl shadow-md min-h-full">
                 <!-- Nội dung sẽ được tải vào đây dựa trên tab được chọn -->
                 
                 <!-- Tab: Lịch sử KCB (Mặc định) -->
                 <div id="lich-su-kcb-content" class="tab-content active">
-                    <h1 class="text-3xl font-bold color-dark-text mb-6 pb-2 border-b-2 border-color-primary">
+                    <h1 class="text-2xl md:text-3xl font-bold color-dark-text mb-6 pb-2 border-b-2 border-color-primary">
                         Lịch sử khám chữa bệnh
                     </h1>
                     
@@ -221,11 +221,12 @@
 
                 <!-- Tab: Biến động chỉ số (MỤC MỚI) -->
                 <div id="bien-dong-chi-so-content" class="tab-content hidden">
-                    <h1 class="text-3xl font-bold color-dark-text mb-6 pb-2 border-b-2 border-color-primary">
+                    <h1 class="text-2xl md:text-3xl font-bold color-dark-text mb-6 pb-2 border-b-2 border-color-primary">
                         Biến động chỉ số sức khỏe (7 ngày gần nhất)
                     </h1>
                     
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- ĐÃ CHỈNH SỬA: grid-cols-1 trên mobile, md:grid-cols-2 trên tablet/desktop -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Biểu đồ Huyết áp -->
                         <div class="bg-gray-50 p-4 rounded-xl shadow-lg border border-gray-200">
                             <h3 class="text-lg font-bold color-dark-text mb-4 text-center">Huyết áp (mmHg)</h3>
@@ -262,25 +263,25 @@
 
                 <!-- Tab: Thông tin cá nhân -->
                 <div id="thong-tin-ca-nhan-content" class="tab-content hidden">
-                    <h1 class="text-3xl font-bold color-dark-text mb-6 pb-2 border-b-2 border-color-primary">
+                    <h1 class="text-2xl md:text-3xl font-bold color-dark-text mb-6 pb-2 border-b-2 border-color-primary">
                         Thông tin cá nhân
                     </h1>
                     <div class="space-y-4 text-gray-700">
-                        <p><span class="font-semibold w-32 inline-block">Họ và Tên:</span> Nguyễn Văn A</p>
-                        <p><span class="font-semibold w-32 inline-block">MSBN:</span> 12345678</p>
-                        <p><span class="font-semibold w-32 inline-block">Ngày sinh:</span> 10/10/1990</p>
-                        <p><span class="font-semibold w-32 inline-block">Giới tính:</span> Nam</p>
-                        <p><span class="font-semibold w-32 inline-block">Địa chỉ:</span> 123 Đường ABC, Quận 1, TP. HCM</p>
-                        <p><span class="font-semibold w-32 inline-block">Số điện thoại:</span> 090xxxxxxx</p>
+                        <p><span class="font-semibold w-24 md:w-32 inline-block">Họ và Tên:</span> Nguyễn Văn A</p>
+                        <p><span class="font-semibold w-24 md:w-32 inline-block">MSBN:</span> 12345678</p>
+                        <p><span class="font-semibold w-24 md:w-32 inline-block">Ngày sinh:</span> 10/10/1990</p>
+                        <p><span class="font-semibold w-24 md:w-32 inline-block">Giới tính:</span> Nam</p>
+                        <p><span class="font-semibold w-24 md:w-32 inline-block">Địa chỉ:</span> 123 Đường ABC, Quận 1, TP. HCM</p>
+                        <p><span class="font-semibold w-24 md:w-32 inline-block">Số điện thoại:</span> 090xxxxxxx</p>
                         
                         <!-- Mục BMI -->
-                        <p class="pt-2"><span class="font-semibold w-32 inline-block">Cân nặng:</span> 70 kg</p>
-                        <p><span class="font-semibold w-32 inline-block">Chiều cao:</span> 1.75 m</p>
-                        <p><span class="font-semibold w-32 inline-block">BMI:</span> <span class="font-bold color-primary-text">22.86 (Bình thường)</span></p>
+                        <p class="pt-2"><span class="font-semibold w-24 md:w-32 inline-block">Cân nặng:</span> 70 kg</p>
+                        <p><span class="font-semibold w-24 md:w-32 inline-block">Chiều cao:</span> 1.75 m</p>
+                        <p><span class="font-semibold w-24 md:w-32 inline-block">BMI:</span> <span class="font-bold color-primary-text">22.86 (Bình thường)</span></p>
                         
                         <!-- Mục Dị ứng -->
-                        <p class="pt-4"><span class="font-semibold w-32 inline-block">Nhóm máu:</span> O+</p>
-                        <p><span class="font-semibold w-32 inline-block">Các loại dị ứng:</span> <span class="font-medium text-red-600">Penicillin, Tôm</span></p>
+                        <p class="pt-4"><span class="font-semibold w-24 md:w-32 inline-block">Nhóm máu:</span> O+</p>
+                        <p><span class="font-semibold w-24 md:w-32 inline-block">Các loại dị ứng:</span> <span class="font-medium text-red-600">Penicillin, Tôm</span></p>
 
                         <button class="color-primary text-white px-4 py-2 mt-4 rounded-lg font-semibold hover:bg-opacity-90 transition">
                             Chỉnh sửa thông tin
@@ -290,7 +291,7 @@
 
                 <!-- Tab: HD chăm sóc sức khỏe -->
                 <div id="hd-cham-soc-content" class="tab-content hidden">
-                    <h1 class="text-3xl font-bold color-dark-text mb-6 pb-2 border-b-2 border-color-primary">
+                    <h1 class="text-2xl md:text-3xl font-bold color-dark-text mb-6 pb-2 border-b-2 border-color-primary">
                         Hướng dẫn chăm sóc sức khỏe
                     </h1>
                     
@@ -311,7 +312,7 @@
 
                 <!-- MỤC MỚI: Tab Hỗ trợ chẩn đoán -->
                 <div id="ho-tro-chan-doan-content" class="tab-content hidden">
-                    <h1 class="text-3xl font-bold color-dark-text mb-6 pb-2 border-b-2 border-color-primary">
+                    <h1 class="text-2xl md:text-3xl font-bold color-dark-text mb-6 pb-2 border-b-2 border-color-primary">
                         Hỗ trợ chẩn đoán
                     </h1>
                     
@@ -645,7 +646,7 @@
 
         function loadIndexFluctuation() {
             // Biểu đồ Huyết áp (Dùng 2 đường line)
-            createChart('chart-blood-pressure', 'Huyết áp', MOCK_VITAL_SIGNS.bloodPressure.systolic, '#DC2626', 'rgba(220, 38, 38, 0.3)', 'line', MOCK_VITAL_SIGNS.bloodPressure.diastolic);
+            createChart('chart-blood-pressure', 'Huyết áp (mmHg)', MOCK_VITAL_SIGNS.bloodPressure.systolic, '#DC2626', 'rgba(220, 38, 38, 0.3)', 'line', MOCK_VITAL_SIGNS.bloodPressure.diastolic);
             
             // Biểu đồ Nhịp tim
             createChart('chart-heart-rate', 'Nhịp tim (bpm)', MOCK_VITAL_SIGNS.heartRate, '#FBBF24', 'rgba(251, 191, 36, 0.3)', 'line');
