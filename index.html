@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ Sơ Khám Chữa Bệnh Online</title>
+    <!-- Tải Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        /* Định nghĩa bảng màu tùy chỉnh dựa trên yêu cầu */
+        .color-primary { background-color: #005BB1; } /* Blue 1 */
+        .color-primary-text { color: #005BB1; }
+        .color-dark { background-color: #002C65; } /* Dark Blue */
+        .color-dark-text { color: #002C65; }
+        .color-light-bg { background-color: #F9F9F9; } /* Light Gray */
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FFFFFF;
+        }
+
+        /* Kiểu cho nút menu bên trái */
+        .sidebar-nav-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            border-radius: 0.5rem;
+        }
+        .sidebar-nav-item:hover {
+            background-color: rgba(0, 91, 177, 0.1); /* Hover nhẹ nhàng */
+        }
+        .sidebar-nav-item.active {
+            background-color: #005BB1;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 91, 177, 0.3), 0 2px 4px -2px rgba(0, 91, 177, 0.3);
+        }
+
+        /* Kiểu cho phần lịch sử KCB (Accordion) */
+        .kcb-accordion-header {
+            cursor: pointer;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s, color 0.2s;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .kcb-accordion-header:hover {
+            background-color: #e6f0f7;
+        }
+
+        .kcb-accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+            padding: 0 1.5rem;
+        }
+        .kcb-accordion-content.open {
+            max-height: 1000px; /* Giá trị lớn để chứa nội dung */
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .kcb-detail-item {
+            margin-bottom: 0.75rem;
+        }
+
+    </style>
+</head>
+<body class="color-light-bg min-h-screen">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        
+        <!-- Sidebar (Thanh điều hướng bên trái) -->
+        <aside class="w-full md:w-64 color-dark p-6 text-white md:min-h-screen shadow-lg rounded-r-xl">
+            <!-- Thông tin Hồ sơ -->
+            <div class="flex flex-col items-center mb-10 pt-4">
+                <div class="w-20 h-20 bg-gray-300 rounded-lg flex items-center justify-center mb-3">
+                    <!-- Placeholder ảnh đại diện -->
+                    <svg class="w-10 h-10 text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                </div>
+                <h2 class="text-xl font-semibold text-center">Nguyễn Văn A</h2>
+                <p class="text-sm text-gray-300">MSBN: <span class="font-mono">12345678</span></p>
+            </div>
+
+            <!-- Menu Điều hướng -->
+            <nav class="space-y-2">
+                <div class="sidebar-nav-item color-dark-text bg-white" data-tab="thong-tin-ca-nhan">
+                    Thông tin cá nhân
+                </div>
+                <div class="sidebar-nav-item active" data-tab="lich-su-kcb">
+                    Lịch sử KCB
+                </div>
+                <div class="sidebar-nav-item color-dark-text bg-white" data-tab="hd-cham-soc">
+                    HD chăm sóc sức khỏe
+                </div>
+            </nav>
+
+            <!-- Nút Đăng xuất -->
+            <div class="mt-12 pt-6 border-t border-gray-700">
+                <button class="w-full text-left sidebar-nav-item flex items-center justify-center bg-transparent hover:bg-red-700 text-white font-semibold">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    Đăng xuất
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content (Nội dung chính) -->
+        <main class="flex-1 p-4 md:p-8">
+            <div id="content-area" class="bg-white p-6 md:p-8 rounded-xl shadow-md min-h-full">
+                <!-- Nội dung sẽ được tải vào đây dựa trên tab được chọn -->
+                
+                <!-- Tab: Lịch sử KCB (Mặc định) -->
+                <div id="lich-su-kcb-content" class="tab-content active">
+                    <h1 class="text-3xl font-bold color-dark-text mb-6 pb-2 border-b-2 border-color-primary">
+                        Lịch sử khám chữa bệnh
+                    </h1>
+                    
+                    <div class="space-y-4">
+                        <!-- Khám lần 1 (Ngày khám: Accordion Item) -->
+                        <div class="kcb-accordion-item rounded-lg border border-gray-200">
+                            <div class="kcb-accordion-header color-primary-text bg-color-light-bg" onclick="toggleAccordion(this)">
+                                <span>Ngày khám: 15/11/2025</span>
+                                <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                            <div class="kcb-accordion-content open">
+                                <div class="space-y-3">
+                                    <div class="kcb-detail-item">
+                                        <p class="font-semibold text-gray-700">Triệu chứng:</p>
+                                        <p class="text-sm text-gray-600">Sốt cao 39 độ, đau họng, ho khan liên tục.</p>
+                                    </div>
+                                    <div class="kcb-detail-item">
+                                        <p class="font-semibold text-gray-700">Kết quả xét nghiệm / chẩn đoán hình ảnh:</p>
+                                        <p class="text-sm text-gray-600">Xét nghiệm máu (CBC): Bạch cầu tăng nhẹ. Phim X-quang phổi: Trong giới hạn bình thường.</p>
+                                    </div>
+                                    <div class="kcb-detail-item">
+                                        <p class="font-semibold text-gray-700">Chẩn đoán của bác sĩ:</p>
+                                        <p class="text-sm text-gray-600 color-primary-text font-medium">Viêm họng cấp do virus.</p>
+                                    </div>
+                                    <div class="kcb-detail-item">
+                                        <p class="font-semibold text-gray-700">Phác đồ điều trị:</p>
+                                        <p class="text-sm text-gray-600">Nghỉ ngơi, bù nước, thuốc hạ sốt và giảm đau.</p>
+                                    </div>
+                                    <div class="kcb-detail-item">
+                                        <p class="font-semibold text-gray-700">Toa thuốc đã kê:</p>
+                                        <p class="text-sm text-gray-600">Paracetamol 500mg (2 viên/ngày), Siro ho thảo dược.</p>
+                                    </div>
+                                    <div class="kcb-detail-item">
+                                        <p class="font-semibold text-gray-700">Thủ thuật/can thiệp:</p>
+                                        <p class="text-sm text-gray-600">Không có.</p>
+                                    </div>
+                                    <div class="kcb-detail-item">
+                                        <p class="font-semibold text-gray-700">Tình trạng sau điều trị:</p>
+                                        <p class="text-sm text-gray-600">Triệu chứng giảm rõ rệt sau 3 ngày, đã hết sốt.</p>
+                                    </div>
+                                    <div class="kcb-detail-item">
+                                        <p class="font-semibold text-gray-700">Hẹn tái khám:</p>
+                                        <p class="text-sm text-gray-600 font-medium text-red-500">Không cần tái khám nếu tình trạng ổn định.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Khám lần 2 (Ngày khám: Accordion Item) -->
+                        <div class="kcb-accordion-item rounded-lg border border-gray-200">
+                            <div class="kcb-accordion-header color-dark-text" onclick="toggleAccordion(this)">
+                                <span>Ngày khám: 02/09/2025</span>
+                                <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                            <div class="kcb-accordion-content">
+                                <div class="space-y-3">
+                                    <div class="kcb-detail-item">
+                                        <p class="font-semibold text-gray-700">Triệu chứng:</p>
+                                        <p class="text-sm text-gray-600">Đau dạ dày âm ỉ, ợ chua sau khi ăn.</p>
+                                    </div>
+                                    <div class="kcb-detail-item">
+                                        <p class="font-semibold text-gray-700">Chẩn đoán của bác sĩ:</p>
+                                        <p class="text-sm text-gray-600 color-primary-text font-medium">Trào ngược dạ dày thực quản (GERD).</p>
+                                    </div>
+                                    <div class="kcb-detail-item">
+                                        <p class="font-semibold text-gray-700">Toa thuốc đã kê:</p>
+                                        <p class="text-sm text-gray-600">Esomeprazole 40mg (1 viên/ngày, 14 ngày).</p>
+                                    </div>
+                                    <div class="kcb-detail-item">
+                                        <p class="font-semibold text-gray-700">Hẹn tái khám:</p>
+                                        <p class="text-sm text-gray-600 font-medium text-green-600">Tái khám sau 2 tuần để đánh giá lại.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Thêm các lần khám khác tại đây -->
+
+                    </div>
+                </div>
+
+                <!-- Tab: Thông tin cá nhân (Nội dung thay thế) -->
+                <div id="thong-tin-ca-nhan-content" class="tab-content hidden">
+                    <h1 class="text-3xl font-bold color-dark-text mb-6 pb-2 border-b-2 border-color-primary">
+                        Thông tin cá nhân
+                    </h1>
+                    <div class="space-y-4 text-gray-700">
+                        <p><span class="font-semibold w-32 inline-block">Ngày sinh:</span> 10/10/1990</p>
+                        <p><span class="font-semibold w-32 inline-block">Giới tính:</span> Nam</p>
+                        <p><span class="font-semibold w-32 inline-block">Địa chỉ:</span> 123 Đường ABC, Quận 1, TP. HCM</p>
+                        <p><span class="font-semibold w-32 inline-block">Số điện thoại:</span> 090xxxxxxx</p>
+                        <p><span class="font-semibold w-32 inline-block">Nhóm máu:</span> O+</p>
+                        <button class="color-primary text-white px-4 py-2 mt-4 rounded-lg font-semibold hover:bg-opacity-90 transition">
+                            Chỉnh sửa thông tin
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab: HD chăm sóc sức khỏe (Nội dung thay thế) -->
+                <div id="hd-cham-soc-content" class="tab-content hidden">
+                    <h1 class="text-3xl font-bold color-dark-text mb-6 pb-2 border-b-2 border-color-primary">
+                        Hướng dẫn chăm sóc sức khỏe
+                    </h1>
+                    <div class="space-y-4 text-gray-700">
+                        <p class="font-semibold color-primary-text">1. Hướng dẫn phòng chống cúm mùa:</p>
+                        <ul class="list-disc list-inside ml-4 space-y-1 text-sm text-gray-600">
+                            <li>Rửa tay thường xuyên bằng xà phòng.</li>
+                            <li>Tránh chạm tay lên mắt, mũi, miệng.</li>
+                            <li>Đeo khẩu trang khi đến nơi đông người.</li>
+                        </ul>
+                        
+                        <p class="font-semibold color-primary-text pt-4">2. Chế độ dinh dưỡng cho người đau dạ dày:</p>
+                        <p class="text-sm text-gray-600">Nên ăn thức ăn mềm, dễ tiêu hóa. Tránh đồ cay nóng, chất kích thích (rượu, bia, cà phê).</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- Logic Tab Navigation ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const navItems = document.querySelectorAll('.sidebar-nav-item');
+            const contentAreas = document.querySelectorAll('.tab-content');
+
+            // Hàm chuyển đổi tab
+            function switchTab(targetTabId) {
+                // Xóa trạng thái active khỏi tất cả nav items
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    item.classList.remove('bg-white');
+                    item.classList.add('color-dark-text', 'bg-white'); // Đảm bảo tất cả trở về màu dark-text/bg-white
+                });
+                
+                // Ẩn tất cả content areas
+                contentAreas.forEach(content => {
+                    content.classList.add('hidden');
+                });
+                
+                // Hiển thị content area mục tiêu
+                const targetContent = document.getElementById(targetTabId + '-content');
+                if (targetContent) {
+                    targetContent.classList.remove('hidden');
+                }
+
+                // Đặt trạng thái active cho nav item được chọn
+                const activeNavItem = document.querySelector(`[data-tab="${targetTabId}"]`);
+                if (activeNavItem) {
+                    activeNavItem.classList.add('active');
+                    activeNavItem.classList.remove('color-dark-text', 'bg-white'); // Xóa lớp màu cũ
+                }
+            }
+
+            // Gán sự kiện click cho nav items
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const targetTabId = item.getAttribute('data-tab');
+                    switchTab(targetTabId);
+                });
+            });
+
+            // Khởi tạo: Đảm bảo tab 'Lịch sử KCB' được chọn ngay từ đầu
+            switchTab('lich-su-kcb');
+        });
+
+        // --- Logic Accordion (cho Lịch sử KCB) ---
+        function toggleAccordion(headerElement) {
+            // Tìm phần tử cha (kcb-accordion-item)
+            const item = headerElement.closest('.kcb-accordion-item');
+            if (!item) return;
+
+            // Tìm nội dung (kcb-accordion-content) và icon
+            const content = item.querySelector('.kcb-accordion-content');
+            const icon = headerElement.querySelector('svg');
+
+            // Đóng/mở nội dung
+            if (content.classList.contains('open')) {
+                // Đóng
+                content.classList.remove('open');
+                icon.classList.remove('rotate-180');
+                headerElement.classList.remove('color-primary-text', 'bg-color-light-bg');
+                headerElement.classList.add('color-dark-text');
+            } else {
+                // Mở
+                // (Tùy chọn: Đóng các accordion khác trước khi mở cái mới)
+                // document.querySelectorAll('.kcb-accordion-content.open').forEach(c => {
+                //     c.classList.remove('open');
+                //     c.previousElementSibling.querySelector('svg').classList.remove('rotate-180');
+                //     c.previousElementSibling.classList.remove('color-primary-text', 'bg-color-light-bg');
+                //     c.previousElementSibling.classList.add('color-dark-text');
+                // });
+
+                content.classList.add('open');
+                icon.classList.add('rotate-180');
+                headerElement.classList.add('color-primary-text', 'bg-color-light-bg');
+                headerElement.classList.remove('color-dark-text');
+            }
+        }
+
+        // Đóng lần khám thứ hai khi tải trang (do lần 1 đã mặc định mở)
+        document.addEventListener('DOMContentLoaded', () => {
+            const secondHeader = document.querySelectorAll('.kcb-accordion-header')[1];
+            if (secondHeader) {
+                const content = secondHeader.nextElementSibling;
+                if (content.classList.contains('open')) {
+                    content.classList.remove('open');
+                    secondHeader.querySelector('svg').classList.remove('rotate-180');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
