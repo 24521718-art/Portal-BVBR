@@ -102,7 +102,8 @@
 
             <!-- Nút Đăng xuất -->
             <div class="mt-12 pt-6 border-t border-gray-700">
-                <button class="w-full text-left sidebar-nav-item flex items-center justify-center bg-transparent hover:bg-red-700 text-white font-semibold">
+                <!-- Đã chỉnh màu chữ mặc định sang đỏ nhạt, hover nền đỏ mạnh và chữ trắng -->
+                <button class="w-full text-left sidebar-nav-item flex items-center justify-center bg-transparent text-red-300 font-semibold hover:bg-red-700 hover:text-white transition duration-200">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                     Đăng xuất
                 </button>
@@ -198,38 +199,52 @@
                     </div>
                 </div>
 
-                <!-- Tab: Thông tin cá nhân (Nội dung thay thế) -->
+                <!-- Tab: Thông tin cá nhân -->
                 <div id="thong-tin-ca-nhan-content" class="tab-content hidden">
                     <h1 class="text-3xl font-bold color-dark-text mb-6 pb-2 border-b-2 border-color-primary">
                         Thông tin cá nhân
                     </h1>
                     <div class="space-y-4 text-gray-700">
+                        <p><span class="font-semibold w-32 inline-block">Họ và Tên:</span> Nguyễn Văn A</p>
+                        <p><span class="font-semibold w-32 inline-block">MSBN:</span> 12345678</p>
                         <p><span class="font-semibold w-32 inline-block">Ngày sinh:</span> 10/10/1990</p>
                         <p><span class="font-semibold w-32 inline-block">Giới tính:</span> Nam</p>
                         <p><span class="font-semibold w-32 inline-block">Địa chỉ:</span> 123 Đường ABC, Quận 1, TP. HCM</p>
                         <p><span class="font-semibold w-32 inline-block">Số điện thoại:</span> 090xxxxxxx</p>
-                        <p><span class="font-semibold w-32 inline-block">Nhóm máu:</span> O+</p>
+                        
+                        <!-- Mục BMI -->
+                        <p class="pt-2"><span class="font-semibold w-32 inline-block">Cân nặng:</span> 70 kg</p>
+                        <p><span class="font-semibold w-32 inline-block">Chiều cao:</span> 1.75 m</p>
+                        <p><span class="font-semibold w-32 inline-block">BMI:</span> <span class="font-bold color-primary-text">22.86 (Bình thường)</span></p>
+                        
+                        <!-- Mục Dị ứng -->
+                        <p class="pt-4"><span class="font-semibold w-32 inline-block">Nhóm máu:</span> O+</p>
+                        <p><span class="font-semibold w-32 inline-block">Các loại dị ứng:</span> <span class="font-medium text-red-600">Penicillin, Tôm</span></p>
+
                         <button class="color-primary text-white px-4 py-2 mt-4 rounded-lg font-semibold hover:bg-opacity-90 transition">
                             Chỉnh sửa thông tin
                         </button>
                     </div>
                 </div>
 
-                <!-- Tab: HD chăm sóc sức khỏe (Nội dung thay thế) -->
+                <!-- Tab: HD chăm sóc sức khỏe -->
                 <div id="hd-cham-soc-content" class="tab-content hidden">
                     <h1 class="text-3xl font-bold color-dark-text mb-6 pb-2 border-b-2 border-color-primary">
                         Hướng dẫn chăm sóc sức khỏe
                     </h1>
-                    <div class="space-y-4 text-gray-700">
-                        <p class="font-semibold color-primary-text">1. Hướng dẫn phòng chống cúm mùa:</p>
-                        <ul class="list-disc list-inside ml-4 space-y-1 text-sm text-gray-600">
-                            <li>Rửa tay thường xuyên bằng xà phòng.</li>
-                            <li>Tránh chạm tay lên mắt, mũi, miệng.</li>
-                            <li>Đeo khẩu trang khi đến nơi đông người.</li>
-                        </ul>
-                        
-                        <p class="font-semibold color-primary-text pt-4">2. Chế độ dinh dưỡng cho người đau dạ dày:</p>
-                        <p class="text-sm text-gray-600">Nên ăn thức ăn mềm, dễ tiêu hóa. Tránh đồ cay nóng, chất kích thích (rượu, bia, cà phê).</p>
+                    
+                    <!-- Loading Indicator (Hiển thị khi đang "tạo" hướng dẫn) -->
+                    <div id="hd-cham-soc-loading" class="flex items-center justify-center py-10 hidden">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span class="text-gray-500">Đang tạo hướng dẫn cá nhân...</span>
+                    </div>
+
+                    <!-- Dynamic Content Area (Nội dung được tạo ra) -->
+                    <div id="hd-cham-soc-content-dynamic" class="space-y-4 text-gray-700">
+                        <!-- Content will be loaded here by JavaScript -->
                     </div>
                 </div>
             </div>
@@ -237,6 +252,100 @@
     </div>
 
     <script>
+        // --- LOGIC GIẢ LẬP TẠO NỘI DUNG AI ---
+        
+        // Dữ liệu mô phỏng lấy từ hồ sơ cá nhân và lần khám gần nhất
+        const MOCK_PERSONAL_INFO = {
+            weight: 70, 
+            height: 1.75, 
+            allergies: ["Penicillin", "Tôm"]
+        };
+        const MOCK_LAST_DIAGNOSIS = {
+            date: "15/11/2025", 
+            diagnosis: "Viêm họng cấp do virus"
+        };
+
+        /**
+         * Giả lập lời gọi đến Gemini API để tạo hướng dẫn chăm sóc sức khỏe cá nhân hóa.
+         * @param {object} personalInfo Thông tin cá nhân.
+         * @param {object} lastDiagnosis Chẩn đoán gần nhất.
+         * @returns {Promise<{title: string, content: string}>} Nội dung hướng dẫn được tạo.
+         */
+        function generateHealthGuidance(personalInfo, lastDiagnosis) {
+            // Đây là nơi thực hiện lời gọi API thực tế đến Gemini (sử dụng fetch và apiKey)
+            // Ví dụ: const response = await fetch(apiUrl, { method: 'POST', body: JSON.stringify(payload) });
+
+            // --- KHỐI GIẢ LẬP KẾT QUẢ AI ---
+            const allergies = personalInfo.allergies.join(', ');
+            const diagnosis = lastDiagnosis.diagnosis;
+            const bmi = (personalInfo.weight / (personalInfo.height * personalInfo.height)).toFixed(2);
+            let bmiAdvice = "Chỉ số BMI của bạn đang ở mức **Bình thường**. Hãy duy trì thói quen ăn uống cân bằng và tập thể dục vừa phải (30 phút/ngày, 5 ngày/tuần) để giữ vững cân nặng lý tưởng.";
+            if (bmi < 18.5) {
+                bmiAdvice = "Chỉ số BMI cho thấy bạn đang **thiếu cân**. Cần tham khảo ý kiến bác sĩ hoặc chuyên gia dinh dưỡng để tăng cân an toàn.";
+            } else if (bmi > 25) {
+                bmiAdvice = "Chỉ số BMI cho thấy bạn đang **thừa cân**. Cần điều chỉnh chế độ ăn và tăng cường vận động để giảm nguy cơ bệnh tim mạch.";
+            }
+
+
+            const guidanceContent = `
+                <p class="text-sm text-gray-700 mb-4 font-medium italic">Hướng dẫn này được tổng hợp tự động dựa trên hồ sơ cá nhân và lần khám gần nhất (${lastDiagnosis.date}).</p>
+
+                <div class="border-l-4 border-color-primary pl-4 py-2">
+                    <p class="font-semibold color-dark-text text-lg">1. Chăm sóc sau khám (Chẩn đoán: ${diagnosis}):</p>
+                    <ul class="list-disc list-inside ml-4 space-y-1 text-sm text-gray-600">
+                        <li>Tiếp tục nghỉ ngơi và uống đủ nước ấm để làm dịu cổ họng.</li>
+                        <li>Tránh ăn đồ quá nóng hoặc quá lạnh để không kích thích thêm vùng họng.</li>
+                        <li>Giữ ấm cơ thể và hạn chế tiếp xúc với khói bụi.</li>
+                    </ul>
+                </div>
+                
+                <div class="border-l-4 border-red-500 pl-4 py-2 mt-4">
+                    <p class="font-semibold text-red-600 text-lg">2. Cảnh báo Dị ứng quan trọng:</p>
+                    <p class="text-sm text-gray-700 font-bold mb-2">Bạn bị dị ứng với: <span class="text-red-600">${allergies}</span></p>
+                    <ul class="list-disc list-inside ml-4 space-y-1 text-sm text-gray-600">
+                        <li>Tuyệt đối **tránh sử dụng Penicillin** và tất cả các loại thuốc có liên quan. Luôn thông báo rõ ràng về dị ứng thuốc này khi nhận đơn thuốc mới.</li>
+                        <li>**Tránh ăn Tôm** để phòng ngừa phản ứng dị ứng thực phẩm nghiêm trọng.</li>
+                    </ul>
+                </div>
+
+                <div class="border-l-4 border-green-500 pl-4 py-2 mt-4">
+                    <p class="font-semibold color-dark-text text-lg">3. Lời khuyên về Thể chất (BMI ${bmi}):</p>
+                    <p class="text-sm text-gray-600">${bmiAdvice}</p>
+                </div>
+            `;
+            // --- KẾT THÚC KHỐI GIẢ LẬP ---
+
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve({ title: "Hướng dẫn chăm sóc sức khỏe", content: guidanceContent });
+                }, 800); // Giả lập độ trễ mạng
+            });
+        }
+
+        async function loadHealthGuidance() {
+            const contentDiv = document.getElementById('hd-cham-soc-content-dynamic');
+            const loadingDiv = document.getElementById('hd-cham-soc-loading');
+            
+            if (loadingDiv) loadingDiv.classList.remove('hidden');
+            if (contentDiv) contentDiv.innerHTML = '';
+            
+            try {
+                // Tải nội dung bằng hàm giả lập AI
+                const result = await generateHealthGuidance(MOCK_PERSONAL_INFO, MOCK_LAST_DIAGNOSIS);
+                if (contentDiv) {
+                    contentDiv.innerHTML = result.content;
+                }
+            } catch (error) {
+                if (contentDiv) {
+                    contentDiv.innerHTML = '<p class="text-red-500">Lỗi khi tải hướng dẫn. Vui lòng thử lại.</p>';
+                }
+                console.error("Error generating guidance:", error);
+            } finally {
+                if (loadingDiv) loadingDiv.classList.add('hidden');
+            }
+        }
+
+
         // --- Logic Tab Navigation ---
         document.addEventListener('DOMContentLoaded', () => {
             const navItems = document.querySelectorAll('.sidebar-nav-item');
@@ -248,7 +357,7 @@
                 navItems.forEach(item => {
                     item.classList.remove('active');
                     item.classList.remove('bg-white');
-                    item.classList.add('color-dark-text', 'bg-white'); // Đảm bảo tất cả trở về màu dark-text/bg-white
+                    item.classList.add('color-dark-text', 'bg-white'); 
                 });
                 
                 // Ẩn tất cả content areas
@@ -262,11 +371,17 @@
                     targetContent.classList.remove('hidden');
                 }
 
+                // LOGIC ĐẶC BIỆT: Tải nội dung AI khi chọn tab Hướng dẫn chăm sóc sức khỏe lần đầu
+                if (targetTabId === 'hd-cham-soc' && !targetContent.hasAttribute('data-loaded')) {
+                    targetContent.setAttribute('data-loaded', 'true'); 
+                    loadHealthGuidance(); 
+                }
+
                 // Đặt trạng thái active cho nav item được chọn
                 const activeNavItem = document.querySelector(`[data-tab="${targetTabId}"]`);
                 if (activeNavItem) {
                     activeNavItem.classList.add('active');
-                    activeNavItem.classList.remove('color-dark-text', 'bg-white'); // Xóa lớp màu cũ
+                    activeNavItem.classList.remove('color-dark-text', 'bg-white'); 
                 }
             }
 
@@ -301,14 +416,6 @@
                 headerElement.classList.add('color-dark-text');
             } else {
                 // Mở
-                // (Tùy chọn: Đóng các accordion khác trước khi mở cái mới)
-                // document.querySelectorAll('.kcb-accordion-content.open').forEach(c => {
-                //     c.classList.remove('open');
-                //     c.previousElementSibling.querySelector('svg').classList.remove('rotate-180');
-                //     c.previousElementSibling.classList.remove('color-primary-text', 'bg-color-light-bg');
-                //     c.previousElementSibling.classList.add('color-dark-text');
-                // });
-
                 content.classList.add('open');
                 icon.classList.add('rotate-180');
                 headerElement.classList.add('color-primary-text', 'bg-color-light-bg');
