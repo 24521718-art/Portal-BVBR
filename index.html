@@ -6,6 +6,8 @@
     <title>Hồ Sơ Khám Chữa Bệnh Online</title>
     <!-- Tải Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tải Chart.js (Thư viện biểu đồ) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <style>
         /* Định nghĩa bảng màu tùy chỉnh dựa trên yêu cầu */
@@ -22,7 +24,7 @@
 
         /* Kiểu cho nút menu bên trái - ĐÃ THU NHỎ PADDING DỌC */
         .sidebar-nav-item {
-            padding: 0.5rem 1rem; /* Giảm 0.75rem thành 0.5rem */
+            padding: 0.5rem 1rem; 
             cursor: pointer;
             transition: all 0.2s;
             font-weight: 500;
@@ -69,6 +71,13 @@
             margin-bottom: 0.75rem;
         }
 
+        /* Đảm bảo biểu đồ có chiều cao cố định để hiển thị tốt */
+        .chart-container {
+            position: relative;
+            height: 300px; 
+            width: 100%;
+        }
+
     </style>
 </head>
 <body class="color-light-bg min-h-screen">
@@ -80,7 +89,7 @@
         <!-- Đặt h-full để thanh sidebar chiếm toàn bộ chiều cao container (h-screen) -->
         <aside class="w-full md:w-64 color-dark p-6 text-white h-full shadow-lg rounded-r-xl flex-shrink-0">
             <!-- Thông tin Hồ sơ -->
-            <div class="flex flex-col items-center mb-8 pt-4"> <!-- Giảm mb-10 thành mb-8 -->
+            <div class="flex flex-col items-center mb-8 pt-4"> 
                 <div class="w-20 h-20 bg-gray-300 rounded-lg flex items-center justify-center mb-3">
                     <!-- Placeholder ảnh đại diện -->
                     <svg class="w-10 h-10 text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
@@ -90,12 +99,16 @@
             </div>
 
             <!-- Menu Điều hướng -->
-            <nav class="space-y-1"> <!-- Giảm space-y-2 thành space-y-1 để tiết kiệm không gian -->
+            <nav class="space-y-1"> 
                 <div class="sidebar-nav-item color-dark-text bg-white" data-tab="thong-tin-ca-nhan">
                     Thông tin cá nhân
                 </div>
                 <div class="sidebar-nav-item active" data-tab="lich-su-kcb">
                     Lịch sử KCB
+                </div>
+                <!-- MỤC MỚI: Biến động chỉ số -->
+                <div class="sidebar-nav-item color-dark-text bg-white" data-tab="bien-dong-chi-so">
+                    Biến động chỉ số
                 </div>
                 <div class="sidebar-nav-item color-dark-text bg-white" data-tab="hd-cham-soc">
                     HD chăm sóc sức khỏe
@@ -107,7 +120,7 @@
             </nav>
 
             <!-- Nút Đăng xuất - ĐÃ GIẢM KHOẢNG CÁCH TRÊN -->
-            <div class="mt-6 pt-4 border-t border-gray-700"> <!-- Giảm mt-12 pt-6 thành mt-6 pt-4 -->
+            <div class="mt-6 pt-4 border-t border-gray-700"> 
                 <!-- Đã chỉnh màu chữ mặc định sang đỏ nhạt, hover nền đỏ mạnh và chữ trắng -->
                 <button class="w-full text-left sidebar-nav-item flex items-center justify-center bg-transparent text-red-300 font-semibold hover:bg-red-700 hover:text-white transition duration-200">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
@@ -206,6 +219,47 @@
                     </div>
                 </div>
 
+                <!-- Tab: Biến động chỉ số (MỤC MỚI) -->
+                <div id="bien-dong-chi-so-content" class="tab-content hidden">
+                    <h1 class="text-3xl font-bold color-dark-text mb-6 pb-2 border-b-2 border-color-primary">
+                        Biến động chỉ số sức khỏe (7 ngày gần nhất)
+                    </h1>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Biểu đồ Huyết áp -->
+                        <div class="bg-gray-50 p-4 rounded-xl shadow-lg border border-gray-200">
+                            <h3 class="text-lg font-bold color-dark-text mb-4 text-center">Huyết áp (mmHg)</h3>
+                            <div class="chart-container">
+                                <canvas id="chart-blood-pressure"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Biểu đồ Nhịp tim -->
+                        <div class="bg-gray-50 p-4 rounded-xl shadow-lg border border-gray-200">
+                            <h3 class="text-lg font-bold color-dark-text mb-4 text-center">Nhịp tim (bpm)</h3>
+                            <div class="chart-container">
+                                <canvas id="chart-heart-rate"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Biểu đồ SpO₂ -->
+                        <div class="bg-gray-50 p-4 rounded-xl shadow-lg border border-gray-200">
+                            <h3 class="text-lg font-bold color-dark-text mb-4 text-center">SpO₂ (%)</h3>
+                            <div class="chart-container">
+                                <canvas id="chart-spo2"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Biểu đồ Nhịp thở -->
+                        <div class="bg-gray-50 p-4 rounded-xl shadow-lg border border-gray-200">
+                            <h3 class="text-lg font-bold color-dark-text mb-4 text-center">Nhịp thở (breaths/min)</h3>
+                            <div class="chart-container">
+                                <canvas id="chart-respiratory-rate"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Tab: Thông tin cá nhân -->
                 <div id="thong-tin-ca-nhan-content" class="tab-content hidden">
                     <h1 class="text-3xl font-bold color-dark-text mb-6 pb-2 border-b-2 border-color-primary">
@@ -281,7 +335,7 @@
     </div>
 
     <script>
-        // --- LOGIC GIẢ LẬP TẠO NỘI DUNG AI ---
+        // --- LOGIC GIẢ LẬP TẠO NỘI DUNG AI VÀ DỮ LIỆU CHỈ SỐ SỨC KHỎE ---
         
         // Dữ liệu mô phỏng lấy từ hồ sơ cá nhân và lần khám gần nhất
         const MOCK_PERSONAL_INFO = {
@@ -297,16 +351,39 @@
             results: "Xét nghiệm máu (CBC): Bạch cầu tăng nhẹ. Phim X-quang phổi: Trong giới hạn bình thường."
         };
 
+        // Dữ liệu mô phỏng Biến động chỉ số (14 chu kỳ ~ 7 ngày)
+        // Dữ liệu được đảo ngược (.reverse()) để phần tử cuối cùng là chu kỳ gần nhất
+        const MOCK_VITAL_SIGNS = {
+            labels: Array.from({ length: 14 }, (_, i) => `Chu kỳ ${14 - i}`),
+            bloodPressure: {
+                // SBP (Tâm thu)
+                systolic: [120, 122, 125, 130, 135, 132, 128, 120, 118, 120, 122, 124, 121, 120].reverse(),
+                // DBP (Tâm trương)
+                diastolic: [80, 81, 85, 88, 92, 90, 85, 78, 75, 78, 80, 82, 79, 77].reverse() 
+            },
+            heartRate: [72, 75, 78, 85, 90, 88, 80, 75, 73, 76, 74, 75, 76, 78].reverse(), // Nhịp tim (bpm)
+            spo2: [98, 97, 96, 95, 96, 97, 98, 98, 99, 98, 97, 98, 99, 99].reverse(), // SpO2 (%)
+            respiratoryRate: [14, 15, 16, 18, 20, 19, 17, 15, 14, 15, 16, 17, 15, 14].reverse() // Nhịp thở (breaths/min)
+        };
+
+        // Lấy các chỉ số gần nhất để phân tích
+        const MOCK_LATEST_VITALS = {
+            bp: `${MOCK_VITAL_SIGNS.bloodPressure.systolic.slice(-1)[0]}/${MOCK_VITAL_SIGNS.bloodPressure.diastolic.slice(-1)[0]} mmHg`,
+            hr: `${MOCK_VITAL_SIGNS.heartRate.slice(-1)[0]} bpm`,
+            spo2: `${MOCK_VITAL_SIGNS.spo2.slice(-1)[0]} %`,
+            rr: `${MOCK_VITAL_SIGNS.respiratoryRate.slice(-1)[0]} breaths/min`,
+            // Lấy dữ liệu 5 chu kỳ gần nhất để phân tích xu hướng
+            bpTrend: MOCK_VITAL_SIGNS.bloodPressure.systolic.slice(-5),
+            hrTrend: MOCK_VITAL_SIGNS.heartRate.slice(-5)
+        };
+
+
         /**
          * Giả lập lời gọi đến Gemini API để tạo hướng dẫn chăm sóc sức khỏe cá nhân hóa.
-         * @param {object} personalInfo Thông tin cá nhân.
-         * @param {object} lastDiagnosis Chẩn đoán gần nhất.
-         * @returns {Promise<{title: string, content: string}>} Nội dung hướng dẫn được tạo.
+         * ĐÃ CẬP NHẬT: Thêm phần phân tích chỉ số sức khỏe gần nhất.
          */
         function generateHealthGuidance(personalInfo, lastDiagnosis) {
-            // Đây là nơi thực hiện lời gọi API thực tế đến Gemini (sử dụng fetch và apiKey)
             
-            // --- KHỐI GIẢ LẬP KẾT QUẢ AI CHO HD CHĂM SÓC ---
             const allergies = personalInfo.allergies.join(', ');
             const diagnosis = lastDiagnosis.diagnosis;
             const bmi = (personalInfo.weight / (personalInfo.height * personalInfo.height)).toFixed(2);
@@ -317,8 +394,13 @@
                 bmiAdvice = "Chỉ số BMI cho thấy bạn đang **thừa cân**. Cần điều chỉnh chế độ ăn và tăng cường vận động để giảm nguy cơ bệnh tim mạch.";
             }
 
+            // Phân tích chỉ số mới
+            const latestVitals = MOCK_LATEST_VITALS;
+            const bpStatus = MOCK_VITAL_SIGNS.bloodPressure.systolic.slice(-1)[0] >= 130 ? "Hơi cao" : "Ổn định";
+
+
             const guidanceContent = `
-                <p class="text-sm text-gray-700 mb-4 font-medium italic">Hướng dẫn này được tổng hợp tự động dựa trên hồ sơ cá nhân và lần khám gần nhất (${lastDiagnosis.date}).</p>
+                <p class="text-sm text-gray-700 mb-4 font-medium italic">Hướng dẫn này được tổng hợp tự động dựa trên hồ sơ cá nhân, lần khám gần nhất (${lastDiagnosis.date}) và chỉ số sức khỏe mới nhất.</p>
 
                 <div class="border-l-4 border-color-primary pl-4 py-2">
                     <p class="font-semibold color-dark-text text-lg">1. Chăm sóc sau khám (Chẩn đoán: ${diagnosis}):</p>
@@ -342,8 +424,14 @@
                     <p class="font-semibold color-dark-text text-lg">3. Lời khuyên về Thể chất (BMI ${bmi}):</p>
                     <p class="text-sm text-gray-600">${bmiAdvice}</p>
                 </div>
+
+                <!-- MỤC MỚI: PHÂN TÍCH CHỈ SỐ SỨC KHỎE -->
+                <div class="border-l-4 border-yellow-500 pl-4 py-2 mt-4">
+                    <p class="font-semibold text-yellow-700 text-lg">4. Đánh giá Chỉ số Sức khỏe Gần nhất:</p>
+                    <p class="text-sm text-gray-700">Đọc gần nhất (Chu kỳ 14): HA ${latestVitals.bp}, Nhịp tim ${latestVitals.hr}, SpO₂ ${latestVitals.spo2}.</p>
+                    <p class="text-xs text-gray-600 mt-1">Huyết áp: <span class="font-bold text-red-500">${bpStatus}</span>. (Kiểm tra lại nếu HA vượt 140/90). Nhịp tim và SpO₂ nằm trong giới hạn bình thường.</p>
+                </div>
             `;
-            // --- KẾT THÚC KHỐI GIẢ LẬP ---
 
             return new Promise(resolve => {
                 setTimeout(() => {
@@ -377,23 +465,23 @@
         
         /**
          * Giả lập lời gọi đến Gemini API để hỗ trợ chẩn đoán.
-         * Cập nhật: Sử dụng ngôn ngữ chuyên ngành và phân tích kỹ lưỡng.
-         * @param {object} lastDiagnosis Dữ liệu đầu vào từ lần khám.
-         * @returns {Promise<string>} HTML content cho Hỗ trợ chẩn đoán.
+         * ĐÃ CẬP NHẬT: Thêm phần phân tích Biến động chỉ số.
          */
         function generateDiagnosticSupport(lastDiagnosis) {
-            // Đây là nơi thực hiện lời gọi API thực tế đến Gemini (sử dụng fetch và apiKey)
-            const { date, symptoms, results } = lastDiagnosis;
-
-            // --- KHỐI GIẢ LẬP KẾT QUẢ AI CHO HỖ TRỢ CHẨN ĐOÁN (CHUYÊN NGÀNH) ---
             
+            const { date, symptoms, results } = lastDiagnosis;
+            const latestVitals = MOCK_LATEST_VITALS;
+
+            // Phân tích xu hướng nhịp tim (ví dụ: nếu có lúc nào đó vượt 90bpm)
+            const hrTrendMsg = latestVitals.hrTrend.some(hr => hr > 90) ? "Đã ghi nhận đỉnh nhịp tim (ví dụ: >90 bpm) trong các chu kỳ trước, có thể liên quan đến tình trạng sốt cao hoặc căng thẳng." : "Nhịp tim duy trì ổn định, không có dấu hiệu nhịp nhanh kéo dài.";
+
             // Đề xuất chẩn đoán
             const aiRecommendation = "Viêm họng cấp tính do căn nguyên virus (Acute Viral Pharyngitis)";
             const suggestedTreatment = "Điều trị hỗ trợ và triệu chứng. Antipyretics (Paracetamol) liều phù hợp, bù dịch đường uống tích cực. Kháng sinh (Antibiotics) không được chỉ định do không có bằng chứng nhiễm khuẩn tiên phát.";
 
             // Phân tích chuyên sâu
             const reasoning = `
-                <p class="mb-3 font-semibold text-gray-800">Phân tích dữ liệu cận lâm sàng và triệu chứng lâm sàng (Ngày ${date}):</p>
+                <p class="mb-3 font-semibold text-gray-800">Phân tích dữ liệu cận lâm sàng, triệu chứng và Biến động chỉ số (Ngày ${date} và Chu kỳ 14):</p>
                 <div class="space-y-3">
                     <div class="border-l-2 border-yellow-500 pl-3">
                         <p class="font-semibold text-gray-700">1. Triệu chứng lâm sàng:</p>
@@ -404,18 +492,18 @@
                     <div class="border-l-2 border-yellow-500 pl-3">
                         <p class="font-semibold text-gray-700">2. Kết quả Xét nghiệm (CBC):</p>
                         <p class="text-sm text-gray-600 italic">Bạch cầu tăng nhẹ (Mild Leukocytosis).</p>
-                        <p class="text-xs text-gray-500 mt-1">Sự gia tăng nhẹ số lượng bạch cầu có thể xuất hiện trong giai đoạn sớm của nhiễm virus hoặc nhiễm khuẩn nhẹ không điển hình. Tuy nhiên, việc không ghi nhận tăng bạch cầu hạt (Neutrophilia) hoặc chuyển trái (Left shift) rõ rệt **giảm xác suất** căn nguyên do vi khuẩn.</p>
+                        <p class="text-xs text-gray-500 mt-1">Sự gia tăng nhẹ số lượng bạch cầu có thể xuất hiện trong giai đoạn sớm của nhiễm virus hoặc nhiễm khuẩn nhẹ không điển hình. Việc không ghi nhận tăng bạch cầu hạt **giảm xác suất** căn nguyên do vi khuẩn.</p>
                     </div>
 
                     <div class="border-l-2 border-yellow-500 pl-3">
-                        <p class="font-semibold text-gray-700">3. Chẩn đoán hình ảnh:</p>
-                        <p class="text-sm text-gray-600 italic">Phim X-quang phổi: Trong giới hạn bình thường.</p>
-                        <p class="text-xs text-gray-500 mt-1">Kết quả này **loại trừ** các chẩn đoán phân biệt nghiêm trọng hơn như Viêm phổi cộng đồng (Community-acquired pneumonia).</p>
+                        <p class="font-semibold text-gray-700">3. Phân tích Biến động Chỉ số Gần nhất:</p>
+                        <p class="text-sm text-gray-600 italic">HA: ${latestVitals.bp}, HR: ${latestVitals.hr}, SpO₂: ${latestVitals.spo2}, RR: ${latestVitals.rr}.</p>
+                        <p class="text-xs text-gray-500 mt-1">${hrTrendMsg} Chỉ số SpO₂ và Huyết áp duy trì ổn định, loại trừ tình trạng suy hô hấp hoặc biến động tuần hoàn cấp tính.</p>
                     </div>
 
                     <div class="border-l-4 border-red-500 pl-3 pt-2">
                         <p class="font-semibold text-red-700">KẾT LUẬN CHUYÊN SÂU:</p>
-                        <p class="text-sm text-gray-800 mt-1">Sự kết hợp giữa triệu chứng lâm sàng không đặc hiệu và bằng chứng cận lâm sàng không ủng hộ nhiễm khuẩn nặng (CBC và X-quang) dẫn đến ưu tiên chẩn đoán Viêm họng cấp do virus. Khuyến nghị duy trì phác đồ điều trị bảo tồn và theo dõi diễn biến lâm sàng.</p>
+                        <p class="text-sm text-gray-800 mt-1">Sự kết hợp giữa triệu chứng lâm sàng và các chỉ số không ủng hộ nhiễm khuẩn nặng hoặc biến chứng nặng (theo X-quang và Chỉ số sinh tồn) dẫn đến ưu tiên chẩn đoán Viêm họng cấp do virus. Khuyến nghị duy trì phác đồ điều trị bảo tồn.</p>
                     </div>
                 </div>
                 <p class="mt-4 font-semibold text-sm text-red-500 italic">Lưu ý: Khuyến nghị này là công cụ hỗ trợ lâm sàng, quyết định chẩn đoán và điều trị cuối cùng cần được xác nhận bởi bác sĩ chuyên khoa.</p>
@@ -425,7 +513,6 @@
                 <p class="text-sm text-gray-700 mb-6 font-medium italic">Phân tích chuyên sâu dữ liệu khám gần nhất: ${date}</p>
 
                 <div class="p-4 rounded-lg bg-red-50 border border-red-200">
-                    <!-- ĐÃ ĐỔI TÊN TIÊU ĐỀ TẠI ĐÂY -->
                     <p class="font-bold text-red-700 text-lg mb-2">Đề xuất chẩn đoán:</p>
                     <p class="text-xl font-bold color-dark-text">${aiRecommendation}</p>
                 </div>
@@ -440,7 +527,6 @@
                     <div class="text-sm">${reasoning}</div>
                 </div>
             `;
-            // --- KẾT THÚC KHỐI GIẢ LẬP ---
 
             return new Promise(resolve => {
                 setTimeout(() => {
@@ -472,6 +558,106 @@
         }
 
 
+        // --- LOGIC VẼ BIỂU ĐỒ CHART.JS ---
+        let charts = {}; // Dùng để lưu trữ các đối tượng biểu đồ để hủy bỏ khi chuyển tab
+
+        function createChart(ctxId, label, data, borderColor, backgroundColor, type = 'line', secondaryData = null) {
+            // Hủy bỏ biểu đồ cũ nếu có để tránh lỗi khi render lại
+            if (charts[ctxId]) {
+                charts[ctxId].destroy(); 
+            }
+            
+            let datasets = [{
+                label: label,
+                data: data,
+                borderColor: borderColor,
+                backgroundColor: backgroundColor,
+                tension: 0.3,
+                fill: false,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+            }];
+            
+            if (secondaryData) {
+                // Thiết lập datasets cho biểu đồ Huyết áp (gồm 2 đường)
+                datasets = [
+                    {
+                        label: 'Tâm thu (SBP)',
+                        data: data,
+                        borderColor: '#DC2626', // Red
+                        backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                        tension: 0.3,
+                        fill: false,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                    },
+                    {
+                        label: 'Tâm trương (DBP)',
+                        data: secondaryData,
+                        borderColor: '#2563EB', // Blue
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        tension: 0.3,
+                        fill: false,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                    }
+                ];
+            }
+            
+            const ctx = document.getElementById(ctxId).getContext('2d');
+            charts[ctxId] = new Chart(ctx, {
+                type: type,
+                data: {
+                    labels: MOCK_VITAL_SIGNS.labels,
+                    datasets: datasets,
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // Cho phép chart-container kiểm soát kích thước
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: label.split(' ')[0]
+                            }
+                        },
+                        x: {
+                            reverse: true, // Hiển thị chu kỳ mới nhất ở bên phải
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: secondaryData !== null, // Chỉ hiển thị legend cho Huyết áp
+                            position: 'top',
+                        },
+                        title: {
+                            display: false,
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadIndexFluctuation() {
+            // Biểu đồ Huyết áp (Dùng 2 đường line)
+            createChart('chart-blood-pressure', 'Huyết áp', MOCK_VITAL_SIGNS.bloodPressure.systolic, '#DC2626', 'rgba(220, 38, 38, 0.3)', 'line', MOCK_VITAL_SIGNS.bloodPressure.diastolic);
+            
+            // Biểu đồ Nhịp tim
+            createChart('chart-heart-rate', 'Nhịp tim (bpm)', MOCK_VITAL_SIGNS.heartRate, '#FBBF24', 'rgba(251, 191, 36, 0.3)', 'line');
+            
+            // Biểu đồ SpO2
+            createChart('chart-spo2', 'SpO₂ (%)', MOCK_VITAL_SIGNS.spo2, '#10B981', 'rgba(16, 185, 129, 0.3)', 'line');
+
+            // Biểu đồ Nhịp thở
+            createChart('chart-respiratory-rate', 'Nhịp thở (breaths/min)', MOCK_VITAL_SIGNS.respiratoryRate, '#6366F1', 'rgba(99, 102, 241, 0.3)', 'line');
+        }
+
+
         // --- Logic Tab Navigation ---
         document.addEventListener('DOMContentLoaded', () => {
             const navItems = document.querySelectorAll('.sidebar-nav-item');
@@ -497,13 +683,16 @@
                     targetContent.classList.remove('hidden');
                 }
 
-                // LOGIC ĐẶC BIỆT: Tải nội dung AI khi chọn tab lần đầu
+                // LOGIC ĐẶC BIỆT: Tải nội dung AI và Biểu đồ khi chọn tab lần đầu
                 if (targetTabId === 'hd-cham-soc' && !targetContent.hasAttribute('data-loaded')) {
                     targetContent.setAttribute('data-loaded', 'true'); 
                     loadHealthGuidance(); 
                 } else if (targetTabId === 'ho-tro-chan-doan' && !targetContent.hasAttribute('data-loaded')) {
                     targetContent.setAttribute('data-loaded', 'true');
                     loadDiagnosticSupport();
+                } else if (targetTabId === 'bien-dong-chi-so') {
+                    // Luôn tải lại biểu đồ để đảm bảo Chart.js render đúng trong DOM hiện tại
+                    loadIndexFluctuation();
                 }
 
                 // Đặt trạng thái active cho nav item được chọn
